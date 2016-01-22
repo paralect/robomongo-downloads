@@ -14,7 +14,7 @@
       docker:
         pull: always
         name: "api-{{item}}"
-        image: paralect/provider-api:latest
+        image: paralect/robomongo-downloads:latest
         state: reloaded
         username: "{{ docker_hub_user }}"
         email: "{{ docker_hub_email }}"
