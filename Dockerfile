@@ -5,6 +5,6 @@ VOLUME ["/robomongo-uploads"]
 EXPOSE 4000
 ADD ./src /src
 WORKDIR /src
-RUN npm install && gulp lint
+RUN npm install
 
 CMD node app.js
