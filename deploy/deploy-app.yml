@@ -28,5 +28,5 @@
           - "{{item}}:4000"
         env:
            NODE_ENV: "{{env}}"
-           ROBOMONGO_UPLOAD_TOKEN: {{robomongo_upload_token}}
+           ROBOMONGO_UPLOAD_TOKEN: "{{robomongo_upload_token}}"
       with_items: nginx_app_ports
