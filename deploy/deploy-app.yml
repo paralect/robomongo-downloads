@@ -1,0 +1,32 @@
+---
+- name: Deploy robomongo downloads
+  hosts: app
+  vars_files:
+    - ["vars/{{ env }}.yml"]
+    - "vars/credentials.yml"
+  tasks:
+    - name: Create downloads directroy
+      file: path={{item}} state=directory
+      with_items:
+        - "/home/robomongo/downloads"
+
+    - name: run robomongo downloads via docker
+      docker:
+        pull: always
+        name: "api-{{item}}"
+        image: paralect/provider-api:latest
+        state: reloaded
+        username: "{{ docker_hub_user }}"
+        email: "{{ docker_hub_email }}"
+        password: "{{ docker_hub_pass }}"
+        restart_policy: on-failure
+        restart_policy_retry: 1000
+        docker_api_version: 1.18
+        volumes:
+          - "/home/robomongo/downloads:/robomongo-downloads"
+        ports:
+          - "{{item}}:4000"
+        env:
+           NODE_ENV: "{{env}}"
+           ROBOMONGO_UPLOAD_TOKEN: {{robomongo_upload_token}}
+      with_items: nginx_app_ports

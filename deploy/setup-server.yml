@@ -1,0 +1,32 @@
+---
+- name: Setup a server
+  hosts: app
+  vars_files:
+    - ["vars/{{ env }}.yml"]
+  roles:
+      - common
+      - nginx
+      - angstwad.docker_ubuntu
+  tasks:
+    - name: copy nginx virtual host file
+      sudo: yes
+      template: src="{{ inventory_dir }}/templates/{{ env }}-nginx-config.j2"
+                dest="/etc/nginx/sites-available/{{app_name}}"
+                owner=root
+                group=root
+      tags:
+        - nginx
+
+    - name: link nginx virtual host file
+      sudo: yes
+      file: src="/etc/nginx/sites-available/{{app_name}}"
+            dest="/etc/nginx/sites-enabled/{{app_name}}"
+            state=link
+      tags:
+        - nginx
+
+    - name: restart nginx
+      sudo: yes
+      service: name=nginx state=restarted
+      tags:
+        - nginx
