@@ -23,7 +23,7 @@
         restart_policy_retry: 1000
         docker_api_version: 1.18
         volumes:
-          - "/home/robomongo/downloads:/robomongo-downloads"
+          - "/home/robomongo/downloads:/robomongo-uploads"
         ports:
           - "{{item}}:4000"
         env:
