@@ -17,17 +17,17 @@ sudo ansible-galaxy install -r requirements.txt -f
 
 Setup server (typically need only once, for a newly created server):
 ```
-./bin/setup-server.sh -i app/staging -e "env=production"
+./bin/setup-server.sh -e "env=production"
 ```
 
 Redeploy nginx alone:
 
 ```
-./bin/setup-server.sh -i app/staging --tags "nginx" -e "env=production"
+./bin/setup-server.sh --tags "nginx" -e "env=production"
 ```
 
 ## Deploy application
 
 ```
-./bin/deploy-app.sh -i app/staging -e "env=production"
+./bin/deploy-app.sh -e "env=production"
 ```
