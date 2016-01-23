@@ -15,6 +15,9 @@ indexRouter
     let os = this.query.os
     let version = this.query.version
     let uploadToken = this.query.token
+
+    //Temp flag, to store packages built on centos in separate directory
+    let linuxType = this.linux_type
     if (uploadToken !== config.uploadToken) {
       this.body = 'upload token is invalid'
       return
@@ -26,6 +29,9 @@ indexRouter
     }
 
     let uploadPath = path.join(config.uploadsDir, version, os)
+    if (linuxType) {
+      uploadPath = path.join(uploadPath, linuxType)
+    }
     let pathExists = fs.existsSync(uploadPath)
     if (!pathExists) {
       yield mkdirp(uploadPath)
