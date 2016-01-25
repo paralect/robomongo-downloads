@@ -17,7 +17,7 @@ indexRouter
     let uploadToken = this.query.token
 
     //Temp flag, to store packages built on centos in separate directory
-    let linuxType = this.linux_type
+    let linuxType = this.query.linux_type
     if (uploadToken !== config.uploadToken) {
       this.body = 'upload token is invalid'
       return
