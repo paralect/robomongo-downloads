@@ -4,10 +4,19 @@
   vars_files:
     - ["vars/{{ env }}.yml"]
   roles:
-      - common
-      - nginx
-      - angstwad.docker_ubuntu
+    - common
+    - nginx
+    - angstwad.docker_ubuntu
   tasks:
+    - name: Assures /etc/nginx/ssl exists
+      file: path=/etc/nginx/ssl state=directory
+
+    - name: Copy ssl certiicate to /etc/nginx/ssl (make sure to create /deploy/files dir and put cetificates there)
+      copy: src={{ inventory_dir }}/files/{{item.src}} dest={{item.dest}} owner=root mode=744
+      with_items:
+        - {src: 'star.robomongo.org.crt', dest: '/etc/nginx/ssl/star.robomongo.org.crt'}
+        - {src: 'star.robomongo.org.key', dest: '/etc/nginx/ssl/star.robomongo.org.key'}
+
     - name: copy nginx virtual host file
       sudo: yes
       template: src="{{ inventory_dir }}/templates/{{ env }}-nginx-config.j2"

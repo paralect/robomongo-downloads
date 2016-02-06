@@ -3,3 +3,4 @@ npm-debug.log
 src/uploads
 .DS_Store
 deploy/vars/credentials.yml
+deploy/files

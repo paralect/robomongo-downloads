@@ -4,9 +4,22 @@ upstream nginx_app_upstream {
   {% endfor %}
 }
 
+#
+# Redirects all HTTP addresses to HTTPS addresses.
+#
 server {
   listen 80;
   server_name {{nginx_server_name}};
+
+  return 301 https://{{nginx_server_name}}$request_uri;
+}
+
+server {
+  listen 443;
+  server_name {{nginx_server_name}};
+  ssl on;
+  ssl_certificate /etc/nginx/ssl/star.robomongo.org.crt;
+  ssl_certificate_key /etc/nginx/ssl/star.robomongo.org.key;
 
   location / {
      client_max_body_size 50m;
