@@ -29,6 +29,5 @@
         env:
            NODE_ENV: "{{env}}"
            ROBOMONGO_UPLOAD_TOKEN: "{{robomongo_upload_token}}"
-           ROBOMONGO_PROTECT_PRIVATE_BUILDS: "{{protect_private_builds}}"
            ROBOMONGO_BUILD_API_SECRET: "{{robomongo_upload_token}}"
       with_items: nginx_app_ports
