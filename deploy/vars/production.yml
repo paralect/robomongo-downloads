@@ -2,3 +2,4 @@ app_name: robomongo
 #---------------Load balancers-----------------#
 nginx_app_ports: [7000]
 nginx_server_name: "download.robomongo.org"
+protect_private_builds: false

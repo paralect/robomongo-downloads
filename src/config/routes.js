@@ -9,6 +9,7 @@ let path = require('path')
 let serve = require('koa-static')
 let Promise = require('bluebird')
 let mkdirp = Promise.promisify(require('mkdirp'))
+let downloadService = require('./../downloads.service')
 
 indexRouter
   .post('/upload', function *() {
@@ -16,7 +17,7 @@ indexRouter
     let version = this.query.version
     let uploadToken = this.query.token
 
-    //Temp flag, to store packages built on centos in separate directory
+    // Temp flag, to store packages built on centos in separate directory
     let linuxType = this.query.linux_type
     if (uploadToken !== config.uploadToken) {
       this.body = 'upload token is invalid'
@@ -54,6 +55,35 @@ indexRouter
 
 module.exports = function (app) {
   app.use(indexRouter.routes())
+  app.use(function *(next) {
+    if (!config.protectPrivateBuilds) {
+      yield* next
+      return
+    }
+    let root = path.resolve(config.uploadsDir)
+    let filePath = path.join(root, this.path)
+
+    let fileStats
+    try {
+      fileStats = fs.statSync(filePath)
+    } catch (e) {
+      // not found
+    }
+
+    // checks if user allowed to download specific build
+    if (fileStats && fileStats.isFile()) {
+      let buildVersion = this.path.split('/')[1]
+
+      let canDowndloadResult = yield downloadService.verifyDownload(this.query.token || '', buildVersion)
+      if (canDowndloadResult.canDownload) {
+        yield* next
+      } else {
+        this.status = canDowndloadResult.statusCode
+      }
+    } else {
+      yield* next
+    }
+  })
   app.use(serve(config.uploadsDir))
   app.use(require('koa-serve-index')(config.uploadsDir))
 }
