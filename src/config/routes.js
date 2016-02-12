@@ -55,35 +55,35 @@ indexRouter
 
 module.exports = function (app) {
   app.use(indexRouter.routes())
-  app.use(function *(next) {
-    if (!config.protectPrivateBuilds) {
-      yield* next
-      return
-    }
-    let root = path.resolve(config.uploadsDir)
-    let filePath = path.join(root, this.path)
-
-    let fileStats
-    try {
-      fileStats = fs.statSync(filePath)
-    } catch (e) {
-      // not found
-    }
-
-    // checks if user allowed to download specific build
-    if (fileStats && fileStats.isFile()) {
-      let buildVersion = this.path.split('/')[1]
-
-      let canDowndloadResult = yield downloadService.verifyDownload(this.query.token || '', buildVersion)
-      if (canDowndloadResult.canDownload) {
-        yield* next
-      } else {
-        this.status = canDowndloadResult.statusCode
-      }
-    } else {
-      yield* next
-    }
-  })
+  // app.use(function *(next) {
+  //   if (!config.protectPrivateBuilds) {
+  //     yield* next
+  //     return
+  //   }
+  //   let root = path.resolve(config.uploadsDir)
+  //   let filePath = path.join(root, this.path)
+  //
+  //   let fileStats
+  //   try {
+  //     fileStats = fs.statSync(filePath)
+  //   } catch (e) {
+  //     // not found
+  //   }
+  //
+  //   // checks if user allowed to download specific build
+  //   if (fileStats && fileStats.isFile()) {
+  //     let buildVersion = this.path.split('/')[1]
+  //
+  //     let canDowndloadResult = yield downloadService.verifyDownload(this.query.token || '', buildVersion)
+  //     if (canDowndloadResult.canDownload) {
+  //       yield* next
+  //     } else {
+  //       this.status = canDowndloadResult.statusCode
+  //     }
+  //   } else {
+  //     yield* next
+  //   }
+  // })
   app.use(serve(config.uploadsDir))
   app.use(require('koa-serve-index')(config.uploadsDir))
 }
