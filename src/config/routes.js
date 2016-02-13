@@ -56,10 +56,6 @@ indexRouter
 module.exports = function (app) {
   app.use(indexRouter.routes())
   app.use(function *(next) {
-    if (!config.protectPrivateBuilds) {
-      yield* next
-      return
-    }
     let root = path.resolve(config.uploadsDir)
     let filePath = path.join(root, this.path)
 

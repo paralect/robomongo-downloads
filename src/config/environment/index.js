@@ -13,8 +13,7 @@ let base = {
   uploadsDir: path.join(__dirname, '../../uploads'),
   uploadToken: process.env.ROBOMONGO_UPLOAD_TOKEN || 'dev',
   buildsApiSecret: process.env.ROBOMONGO_BUILD_API_SECRET || 'dev',
-  buildApiUrl: 'http://localhost:3001',
-  protectPrivateBuilds: process.env.ROBOMONGO_PROTECT_PRIVATE_BUILDS || false
+  buildApiUrl: 'http://localhost:3001'
 }
 
 if (!fs.existsSync(base.uploadsDir)) {
