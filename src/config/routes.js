@@ -65,16 +65,16 @@ module.exports = function (app) {
     } catch (e) {
       // not found
     }
-
+    let referer = this.request.header['referer']
     // checks if user allowed to download specific build
     if (fileStats && fileStats.isFile()) {
       let buildVersion = this.path.split('/')[1]
 
-      let canDowndloadResult = yield downloadService.verifyDownload(this.query.token || '', buildVersion)
+      let canDowndloadResult = yield downloadService.verifyDownload(this.query.token || '', buildVersion, referer)
       if (canDowndloadResult.canDownload) {
         yield* next
       } else {
-        this.status = canDowndloadResult.statusCode
+        this.status = canDowndloadResult.statusCode || 401;
       }
     } else {
       yield* next
