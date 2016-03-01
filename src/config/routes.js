@@ -70,6 +70,12 @@ module.exports = function (app) {
     if (fileStats && fileStats.isFile()) {
       let buildVersion = this.path.split('/')[1]
 
+      //allow internal downloads if valid token is specified
+      if(this.query.token === config.buildsApiSecret) {
+        yield* next
+        return;
+      }
+
       let canDowndloadResult = yield downloadService.verifyDownload(this.query.token || '', buildVersion, referer)
       if (canDowndloadResult.canDownload) {
         yield* next
