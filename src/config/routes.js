@@ -68,7 +68,9 @@ module.exports = function (app) {
     let referer = this.request.header['referer']
     // checks if user allowed to download specific build
     if (fileStats && fileStats.isFile()) {
-      let buildVersion = this.path.split('/')[1]
+      let items = this.path.split('/')
+      let buildVersion = items.length > 0 ? items[1] : null
+      let buildOs = items.length > 1 ? items[2] : null
 
       //allow internal downloads if valid token is specified
       if(this.query.token === config.buildsApiSecret) {
@@ -76,7 +78,7 @@ module.exports = function (app) {
         return;
       }
 
-      let canDowndloadResult = yield downloadService.verifyDownload(this.query.token || '', buildVersion, referer)
+      let canDowndloadResult = yield downloadService.verifyDownload(this.query.token || '', buildVersion, referer, buildOs)
       if (canDowndloadResult.canDownload) {
         yield* next
       } else {
