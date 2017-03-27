@@ -1,13 +1,14 @@
 ## Robomongo downloads
 
-This is git repo of the application used to upload/download robomongo distributives
+This is git repo of the application used to download robomongo distributives
 
-## Manual release upload
+## Deploy
 
-That might be needed sometimes:
+Configuration is located in `group_vars/servers` file.
+
+Deploy with `bin/deploy.sh` custom script.
 
 ```
-curl -i -X POST \
-    -F "image=@/path/to/robomongo/distributive" \
-    "http://download.robomongo.org/upload?os={osx|windows|linux}&version={ex.: 0.9.0-RC}1&token={AUTH_TOKEN}"
+cd deploy
+bin/deploy.sh
 ```
