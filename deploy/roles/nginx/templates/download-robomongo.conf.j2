@@ -1,0 +1,43 @@
+server {
+    listen 80;
+    server_name {{ansible_host}};
+    root {{static}};
+
+    access_log  {{logs}}/nginx/access.log;
+    error_log {{logs}}/nginx/error.log;
+
+    gzip on;
+    gzip_proxied any;
+    gzip_vary on;
+
+    location / {
+        # serving static files
+    }
+}
+
+server {
+    listen 80;
+    server_name www.download.robomongo.org download.robomongo.org;
+    return 301 https://download.robomongo.org$request_uri;
+}
+
+server {
+    listen 443;
+    server_name www.download.robomongo.org download.robomongo.org {{ansible_host}};
+    root {{static}};
+
+    access_log  {{logs}}/nginx/access.log;
+    error_log {{logs}}/nginx/error.log;
+
+    gzip on;
+    gzip_proxied any;
+    gzip_vary on;
+
+    ssl on;
+    ssl_certificate {{root}}/star.robomongo.org.crt;
+    ssl_certificate_key {{root}}/star.robomongo.org.key;
+
+    location / {
+        # serving static files
+    }
+}

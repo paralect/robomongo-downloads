@@ -1,35 +1,28 @@
 ---
-  - name: add nginx ppa
-    sudo: yes
-    apt_repository: repo='ppa:nginx/stable'
+- name: Install nginx
+  apt: pkg=nginx state=present update_cache=yes
+  become: yes
 
-  - name: update apt-get
-    sudo: yes
-    apt: update_cache=yes cache_valid_time=3600
+- name: Create nginx site config
+  template: src=download-robomongo.conf.j2 dest=/etc/nginx/sites-available/{{app}}.conf
+  become: yes
+  tags:
+    - nginx
 
-  - name: install nginx
-    sudo: yes
-    apt: pkg=nginx state=present
+- name: Create certificate and key files for HTTPS
+  template: src={{item}} dest={{root}}/{{item}}
+  with_items:
+    - "star.robomongo.org.crt"
+    - "star.robomongo.org.key"
 
-  - name: copy nginx.conf
-    sudo: yes
-    template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf owner=root group=root
-    tags:
-      - nginx
+- name: Link nginx site config
+  file: src=/etc/nginx/sites-available/{{app}}.conf dest=/etc/nginx/sites-enabled/{{app}}.conf state=link
+  become: yes
+  tags:
+    - nginx
 
-  - name: setup nginx host file dirs
-    sudo: yes
-    file: name=/etc/nginx/{{ item }} state=directory owner=root group=root
-    with_items:
-      - sites-available
-      - sites-enabled
-
-  - name: ensure default nginx has been deleted
-    sudo: yes
-    file: dest=/etc/nginx/sites-enabled/default state=absent
-
-  - name: restart nginx
-    sudo: yes
-    service: name=nginx state=restarted enabled=yes
-    tags:
-      - nginx
+- name: Reload nginx
+  service: name=nginx state=reloaded
+  become: yes
+  tags:
+    - nginx

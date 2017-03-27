@@ -1,1 +1,2 @@
-app ansible_ssh_host=192.241.244.21
+[servers]
+production ansible_ssh_host=104.236.89.56

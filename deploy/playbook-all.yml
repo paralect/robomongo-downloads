@@ -1,0 +1,3 @@
+---
+- include: playbook-init.yml
+- include: playbook-setup.yml

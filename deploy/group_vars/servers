@@ -1,0 +1,10 @@
+---
+# Name of application (used in various places as name of the folder or files)
+app: download-robomongo
+
+# Root folder, where we store application files
+root: "/home/robomongo"
+
+# Additional folders
+logs: "{{root}}/logs"
+static: "{{root}}/downloads"
